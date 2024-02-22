@@ -32,6 +32,7 @@ export default function Sender() {
                     min={1}
                     max={26}
                     label="Key"
+                    defaultValue={1}
                 />
                 <Button type="submit" color="primary">
                     Send

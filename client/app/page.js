@@ -1,31 +1,36 @@
-import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Image } from "@nextui-org/react";
+import { Card, CardBody, CardFooter, CardHeader, Divider } from "@nextui-org/react";
 
 export default function Home() {
     return (
-        <div>
-            <Card className="max-w-[400px]">
-                <CardHeader className="flex gap-3">
-                    <Image
-                        alt="nextui logo"
-                        height={40}
-                        radius="sm"
-                        src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-                        width={40}
-                    />
-                    <div className="flex flex-col">
-                        <p className="text-md">NextUI</p>
-                        <p className="text-small text-default-500">nextui.org</p>
-                    </div>
-                </CardHeader>
-                <Divider />
-                <CardBody>
-                    <p>Make beautiful websites regardless of your design experience.</p>
+        <div className="h-svh w-svw flex flex-row justify-center items-center gap-10 p-4">
+            <Card className="max-w-[250px] h-[300px] bg-white/50">
+                <CardBody className="flex flex-col items-center justify-center  mt-5">
+                    <p className="text-3xl font-bold text-slate-500  drop-shadow-md">Sender</p>
                 </CardBody>
-                <Divider />
-                <CardFooter>
-                    <Link isExternal showAnchorIcon href="https://github.com/nextui-org/nextui">
-                        Visit source code on GitHub.
-                    </Link>
+                <CardFooter className="bg-slate-200/80">
+                    <p className="text-md font-regular text-slate-400 text-center drop-shadow-sm">
+                        Encrypt and send a message with a symmetric key
+                    </p>
+                </CardFooter>
+            </Card>
+            <Card className="max-w-[250px] h-[300px] bg-white/50">
+                <CardBody className="flex flex-col items-center justify-center mt-5">
+                    <p className="text-3xl font-bold text-slate-500  drop-shadow-md">Receiver</p>
+                </CardBody>
+                <CardFooter className="bg-slate-200/80">
+                    <p className="text-md font-regular text-slate-400 text-center drop-shadow-sm">
+                        Receive and decrypt with a symmetric key
+                    </p>
+                </CardFooter>
+            </Card>
+            <Card className="max-w-[250px] h-[300px] bg-white/50">
+                <CardBody className="flex flex-col items-center justify-center  mt-5">
+                    <p className="text-3xl font-bold text-slate-500  drop-shadow-md">Attacker</p>
+                </CardBody>
+                <CardFooter className="bg-slate-200/80">
+                    <p className="text-md font-regular text-slate-400 text-center drop-shadow-sm">
+                        Receive a cipher text and break it
+                    </p>
                 </CardFooter>
             </Card>
         </div>
