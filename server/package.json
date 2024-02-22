@@ -1,0 +1,17 @@
+{
+  "name": "caesar-cipher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "bufferutil": "^4.0.8",
+    "socket.io": "^4.7.4",
+    "utf-8-validate": "^5.0.10"
+  }
+}
