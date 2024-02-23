@@ -44,7 +44,13 @@ export default function Sender() {
                                 "focus-within:bg-indigo-200/70",
                                 "hover:!border-indigo-400/40",
                             ],
-                            input: ["!text-xl", "text-indigo-400", "placeholder:text-indigo-300/50", "tracking-tight"],
+                            input: [
+                                "!text-3xl",
+                                "font-medium",
+                                "text-indigo-400",
+                                "placeholder:text-indigo-300/50",
+                                "tracking-tight",
+                            ],
                         }}
                     />
                     <Input
