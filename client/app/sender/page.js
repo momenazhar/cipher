@@ -28,10 +28,7 @@ export default function Sender() {
                     You are the sender! Enter a message and choose a key to encrypt it and send it
                 </p>
             </div>
-            <form
-                onSubmit={onSubmit}
-                className="w-1/2 h-auto flex items-center justify-center flex-col p-12 rounded-3xl"
-            >
+            <form onSubmit={onSubmit} className="w-1/2 h-auto flex items-center justify-center flex-col p-12">
                 <div className="flex flex-row w-full gap-3 selection:bg-violet-300/70 selection:text-violet-400">
                     <Textarea
                         type="text"
