@@ -32,7 +32,7 @@ export default function Sender() {
                 onSubmit={onSubmit}
                 className="w-1/2 h-auto flex items-center justify-center flex-col p-12 rounded-3xl"
             >
-                <div className="flex flex-row w-full gap-3">
+                <div className="flex flex-row w-full gap-3 selection:bg-violet-300/70 selection:text-violet-400">
                     <Textarea
                         type="text"
                         name="plainText"
@@ -69,7 +69,7 @@ export default function Sender() {
                                 "w-24",
                             ],
                             input: [
-                                "text-4xl",
+                                "text-3xl",
                                 "font-bold",
                                 "text-indigo-400",
                                 "placeholder:text-indigo-300/95",
