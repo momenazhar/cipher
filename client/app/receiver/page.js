@@ -31,7 +31,10 @@ export default function Sender() {
     if (!mounted) return null;
     return (
         <div className="w-svw h-svh flex flex-col items-center justify-center">
-            <Link href="/" className="absolute top-12 left-12 text-slate-500">
+            <Link
+                href="/"
+                className="absolute top-12 left-12 text-slate-500 p-2 transition-all hover:bg-slate-300/20 rounded-lg"
+            >
                 <Back />
             </Link>
             <div className="w-svw text-center flex md:gap-5 gap-2 flex-col">
@@ -44,7 +47,7 @@ export default function Sender() {
                 </p>
             </div>
             <div className="md:w-1/2 w-full h-auto flex items-center justify-center md:flex-row flex-col gap-3 selection:bg-violet-300/70 selection:text-violet-400 p-12">
-                <Card className="h-24 w-full grow-1 flex justify-center bg-indigo-100/30 p-4 border-indigo-200/40 text-3xl text-indigo-400 font-semibold border-2 shadow-sm">
+                <Card className="h-24 w-full grow-1 flex justify-center bg-indigo-100/30 p-4 border-indigo-200/40 text-3xl text-indigo-400 font-semibold border-2 shadow-sm truncate">
                     {caesar(message, 26 - key)}
                 </Card>
                 <Input

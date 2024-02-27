@@ -14,7 +14,7 @@ export default function Home() {
             </div>
             <div className="h-1/2 w-svw flex md:flex-row flex-col justify-center items-center md:gap-24 gap-3 p-4">
                 <Link href="/sender">
-                    <Card className="md:max-w-[250px] md:h-[300px] h-[80px] md:w-[250px] w-[250px] bg-white/50 cursor-pointer hover:translate-y-[-16px] hover:shadow-large hover:transition-all hover:bg-white/95">
+                    <Card className="md:max-w-[250px] md:h-[300px] h-[80px] md:w-[250px] w-[250px] bg-white/30 cursor-pointer hover:translate-y-[-16px] hover:shadow-large hover:transition-all hover:bg-white/65">
                         <CardBody className="flex flex-col items-center justify-center md:mt-5">
                             <p className="md:text-3xl text-xl font-bold text-slate-500 drop-shadow-md select-none">
                                 Sender
@@ -28,7 +28,7 @@ export default function Home() {
                     </Card>
                 </Link>
                 <Link href="/receiver">
-                    <Card className="md:max-w-[250px] md:h-[300px] h-[80px] md:w-[250px] w-[250px] bg-white/50 cursor-pointer hover:translate-y-[-16px] hover:shadow-large hover:transition-all hover:bg-white/95">
+                    <Card className="md:max-w-[250px] md:h-[300px] h-[80px] md:w-[250px] w-[250px] bg-white/30 cursor-pointer hover:translate-y-[-16px] hover:shadow-large hover:transition-all hover:bg-white/65">
                         <CardBody className="flex flex-col items-center justify-center md:mt-5">
                             <p className="md:text-3xl text-xl font-bold text-slate-500 drop-shadow-md select-none">
                                 Receiver
@@ -42,7 +42,7 @@ export default function Home() {
                     </Card>
                 </Link>
                 <Link href="attacker">
-                    <Card className="md:max-w-[250px] md:h-[300px] h-[80px] md:w-[250px] w-[250px] bg-white/50 cursor-pointer hover:translate-y-[-16px] hover:shadow-large hover:transition-all hover:bg-white/95">
+                    <Card className="md:max-w-[250px] md:h-[300px] h-[80px] md:w-[250px] w-[250px] bg-white/30 cursor-pointer hover:translate-y-[-16px] hover:shadow-large hover:transition-all hover:bg-white/65">
                         <CardBody className="flex flex-col items-center justify-center md:mt-5">
                             <p className="md:text-3xl text-xl font-bold text-slate-500 drop-shadow-md select-none">
                                 Attacker

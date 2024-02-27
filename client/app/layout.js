@@ -14,13 +14,13 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={inter.className}>
-                <div>
+                <div className="overflow-hidden">
                     <Image
                         src="/background.svg"
-                        height={800}
-                        width={800}
+                        objectFit="cover"
+                        layout="fill"
                         alt="Background Gradient"
-                        className="absolute"
+                        className="absolute opacity-55"
                     />
                     <Image
                         src="/background2.png"
