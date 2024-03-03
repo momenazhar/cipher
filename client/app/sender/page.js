@@ -60,7 +60,7 @@ export default function Sender() {
                         variant="faded"
                         className="md:h-24 grow-1"
                         ref={textAreaRef}
-                        placeholder="Enter your message"
+                        placeholder="Message"
                         spellCheck="false"
                         onChange={onMessageChange}
                         classNames={{
@@ -79,6 +79,7 @@ export default function Sender() {
                                 "placeholder:text-indigo-300/50",
                                 "tracking-tight",
                                 "truncate",
+                                "p-1",
                             ],
                         }}
                     />

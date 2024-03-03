@@ -13,14 +13,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={inter.className}>
+            <body className={inter.className} suppressHydrationWarning={true}>
                 <div className="overflow-hidden">
                     <Image
                         src="/background.svg"
-                        objectFit="cover"
-                        layout="fill"
+                        width={800}
+                        height={800}
                         alt="Background Gradient"
-                        className="absolute opacity-55"
+                        className="absolute opacity-55 md:h-3/4 md:w-3/4 h-1/3 w-full"
                     />
                     <Image
                         src="/background2.png"
