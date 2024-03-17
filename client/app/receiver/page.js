@@ -3,28 +3,30 @@
 import { caesar } from "../caesar";
 import { socket } from "../socket";
 import { useState, useEffect } from "react";
-import { Card, Input } from "@nextui-org/react";
+import { Card, Divider, Input } from "@nextui-org/react";
 import { Back } from "@/public/back";
 import Link from "next/link";
 
-export default function Sender() {
+export default function Receiver() {
     const [mounted, setMounted] = useState(false);
     const [message, setMessage] = useState("");
+    const [original, setOriginal] = useState("");
+
     const [key, setKey] = useState(1);
-    function onSubmit(e) {
+    function onChange(e) {
         e.preventDefault();
         setKey(+e.target.value);
     }
 
     useEffect(() => {
         setMounted(true);
-        function onMessage(message) {
-            setMessage(message);
-        }
-        socket.on("message", onMessage);
+
+        socket.on("message", setMessage);
+        socket.on("originalmessage", setOriginal);
 
         return () => {
-            socket.off("message", onMessage);
+            socket.off("message", setMessage);
+            socket.off("originalmessage", setOriginal);
         };
     }, []);
 
@@ -46,42 +48,55 @@ export default function Sender() {
                     key as the sender to decrypt it
                 </p>
             </div>
-            <div className="md:w-1/2 w-full h-auto flex items-center justify-center md:flex-row flex-col gap-3 selection:bg-violet-300/70 selection:text-violet-400 p-12">
-                <Card className="h-24 w-full grow-1 flex justify-center bg-indigo-100/30 p-4 border-indigo-200/40 text-3xl text-indigo-400 font-semibold border-2 shadow-sm truncate">
-                    {caesar(message, 26 - key)}
-                </Card>
-                <Input
-                    type="number"
-                    name="keyOffset"
-                    className="md:w-24 w-20"
-                    placeholder="Key"
-                    variant="faded"
-                    min={1}
-                    max={25}
-                    defaultValue={1}
-                    onChange={onSubmit}
-                    classNames={{
-                        inputWrapper: [
-                            "bg-indigo-200/30",
-                            "border-indigo-300/40",
-                            "focus-within:bg-indigo-300/70",
-                            "hover:!border-indigo-500/40",
-                            "md:h-24",
-                            "md:w-24",
-                            "h-20",
-                            "w-20",
-                        ],
-                        input: [
-                            "md:text-3xl",
-                            "text-2xl",
-                            "font-bold",
-                            "text-indigo-400",
-                            "placeholder:text-indigo-300/95",
-                            "tracking-tight",
-                            "text-center",
-                        ],
-                    }}
-                />
+            <div className="w-3/4 h-1/3 flex gap-3 items-center justify-center flex-row m-12 z-50">
+                <div style={{ gridTemplateRows: "1fr 0.1fr 1fr" }} className="grid grid-cols-5 gap-3 w-full h-full">
+                    <Card
+                        style={{ gridArea: "1 / 1 / 2 / 6" }}
+                        className="h-full w-full flex justify-center bg-indigo-100/30 p-4 border-indigo-200/40 text-3xl text-indigo-400 font-semibold border-2 shadow-sm truncate"
+                    >
+                        {original}
+                    </Card>
+                    <div style={{ gridArea: "2 / 1 / 3 / 6" }} className="flex items-center justify-center w-full">
+                        <Divider className="w-[95%] bg-indigo-400/50" />
+                    </div>
+                    <Card
+                        style={{ gridArea: "3 / 1 / 4 / 5" }}
+                        className="h-full w-full flex justify-center bg-indigo-100/30 p-4 border-indigo-200/40 text-3xl text-indigo-400 font-semibold border-2 shadow-sm truncate"
+                    >
+                        {caesar(message, 26 - key)}
+                    </Card>
+                    <div style={{ gridArea: "3 / 5 / 4 / 6" }} className="w-full h-full">
+                        <Input
+                            type="number"
+                            name="keyOffset"
+                            variant="faded"
+                            className="w-full h-full"
+                            placeholder="Key"
+                            min={1}
+                            max={25}
+                            defaultValue={1}
+                            onChange={onChange}
+                            classNames={{
+                                inputWrapper: [
+                                    "bg-indigo-100/30",
+                                    "border-indigo-200/40",
+                                    "focus-within:bg-indigo-200/70",
+                                    "hover:!border-indigo-400/40",
+                                    "w-full",
+                                    "h-full",
+                                ],
+                                input: [
+                                    "md:text-3xl",
+                                    "font-bold",
+                                    "text-indigo-400",
+                                    "placeholder:text-indigo-300/50",
+                                    "tracking-tight",
+                                    "text-center",
+                                ],
+                            }}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );

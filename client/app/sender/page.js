@@ -28,13 +28,11 @@ export default function Sender() {
     }
 
     function onSubmitOriginal(formData) {
-        // socket.emit("message", caesar(formData.get("plainText"), +formData.get("keyOffset")));
-        console.log(formData.get("plainText"), +formData.get("keyOffset"));
+        socket.emit("originalmessage", formData.get("plainText"));
     }
 
     function onSubmitEncrypted(formData) {
-        // socket.emit("message", caesar(formData.get("plainText"), +formData.get("keyOffset")));
-        console.log(caesar(formData.get("plainText"), +formData.get("keyOffset")), +formData.get("keyOffset"));
+        socket.emit("message", caesar(formData.get("plainText"), +formData.get("keyOffset")));
     }
 
     function onKeyChange(e) {

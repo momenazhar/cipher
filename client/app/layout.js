@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={inter.className} suppressHydrationWarning={true}>
-                <div className="overflow-hidden">
+                <div className="overflow-hidden select-none pointer-events-none">
                     <Image
                         src="/background.svg"
                         width={800}

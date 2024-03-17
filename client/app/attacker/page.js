@@ -7,24 +7,21 @@ import { useState, useEffect } from "react";
 import { Button, Card } from "@nextui-org/react";
 import { Back } from "@/public/back";
 import Link from "next/link";
+import { Code } from "@/public/code";
 
-export default function Sender() {
+export default function Attacker() {
     const [mounted, setMounted] = useState(false);
     const [cipherText, setCipherText] = useState([]);
     const [startAnimation, setStartAnimation] = useState(false);
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         setMounted(true);
+
         function onMessage(message) {
-            const cipherTexts = [];
-            for (let i = 0; i <= 25; i++) {
-                setTimeout(() => {
-                    cipherTexts.push(caesar(message, 26 - i));
-                    setCipherText([...cipherTexts]);
-                    setStartAnimation(true);
-                }, i * 100);
-            }
+            setMessage(message);
         }
+
         socket.on("message", onMessage);
 
         return () => {
@@ -32,9 +29,20 @@ export default function Sender() {
         };
     }, []);
 
+    const handleBruteForce = () => {
+        const cipherTexts = [];
+        for (let i = 0; i <= 25; i++) {
+            setTimeout(() => {
+                cipherTexts.push(caesar(message, 26 - i));
+                setCipherText([...cipherTexts]);
+                setStartAnimation(true);
+            }, i * 100);
+        }
+    };
+
     if (!mounted) return null;
     return (
-        <div className="w-svw h-svh flex flex-col items-center justify-center md:p-12 md:gap-12 gap-2">
+        <div className="w-svw h-svh flex flex-col items-center justify-center md:p-12 p-4 md:gap-8 gap-2">
             <Link
                 href="/"
                 className="absolute top-12 left-12 text-slate-500 p-2 transition-all hover:bg-slate-300/20 rounded-lg"
@@ -50,7 +58,23 @@ export default function Sender() {
                     key to find the original text
                 </p>
             </div>
-            <div className="md:h-3/4 h-3/5 overflow-y-scroll w-full flex flex-col gap-2 p-4 rounded-3xl list-container selection:bg-violet-300/70 selection:text-violet-400">
+            <div className="h-24 w-full flex flex-row gap-8">
+                <Card
+                    className={`h-full w-[80%] grow-1 flex justify-center bg-indigo-100/30 p-4 border-indigo-200/40 text-3xl font-medium border-2 shadow-sm truncate ${
+                        message ? "text-indigo-400" : "text-indigo-300/50"
+                    }`}
+                >
+                    {message ? message : "Cipher Text"}
+                </Card>
+                <Button
+                    onClick={handleBruteForce}
+                    className="bg-indigo-500/80 hover:bg-indigo-600 text-white font-bold text-2xl w-[20%] h-full p-0"
+                    endContent={<Code />}
+                >
+                    Brute Force
+                </Button>
+            </div>
+            <div className="md:h-[60%] h-3/5 overflow-y-scroll w-full flex flex-col gap-2 p-4 rounded-3xl list-container selection:bg-violet-300/70 selection:text-violet-400">
                 {cipherText.map((text, index) => (
                     <motion.div
                         key={index}
