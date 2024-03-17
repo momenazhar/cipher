@@ -3,10 +3,11 @@
 import { caesar } from "../caesar";
 import { socket } from "../socket";
 import { useState, useEffect, useRef } from "react";
-import { Button, Card, CardBody, Input, Textarea } from "@nextui-org/react";
+import { Button, Card, Input } from "@nextui-org/react";
 import { Send } from "@/public/send";
 import { Back } from "@/public/back";
 import Link from "next/link";
+import { Encrypt } from "@/public/encrypt";
 
 export default function Sender() {
     const [mounted, setMounted] = useState(false);
@@ -17,18 +18,33 @@ export default function Sender() {
     function onSubmit(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
-        socket.emit("message", caesar(formData.get("plainText"), +formData.get("keyOffset")));
+        if (e.nativeEvent.submitter === e.target.querySelector("#send-original")) {
+            console.log("Submit Original");
+            onSubmitOriginal(formData);
+        } else if (e.nativeEvent.submitter === e.target.querySelector("#send-encrypted")) {
+            console.log("Submit Encrypted");
+            onSubmitEncrypted(formData);
+        }
+    }
+
+    function onSubmitOriginal(formData) {
+        // socket.emit("message", caesar(formData.get("plainText"), +formData.get("keyOffset")));
+        console.log(formData.get("plainText"), +formData.get("keyOffset"));
+    }
+
+    function onSubmitEncrypted(formData) {
+        // socket.emit("message", caesar(formData.get("plainText"), +formData.get("keyOffset")));
+        console.log(caesar(formData.get("plainText"), +formData.get("keyOffset")), +formData.get("keyOffset"));
     }
 
     function onKeyChange(e) {
         e.preventDefault();
         setOffset(+e.target.value);
-        setMsg(caesar(textAreaRef.current.value, +e.target.value));
     }
 
-    function onMessageChange(e) {
+    function onEncrypt(e) {
         e.preventDefault();
-        setMsg(caesar(e.target.value, offset));
+        setMsg(caesar(textAreaRef.current.value, offset));
     }
 
     useEffect(() => {
@@ -52,90 +68,107 @@ export default function Sender() {
                     You are the sender! Enter a message and choose a key to encrypt it and send it
                 </p>
             </div>
-            <form onSubmit={onSubmit} className="md:w-1/2 w-full h-auto flex items-center justify-center flex-col p-12">
-                <div className="flex md:flex-row flex-col w-full gap-3 selection:bg-violet-300/70 selection:text-violet-400">
-                    <Input
-                        type="text"
-                        name="plainText"
-                        variant="faded"
-                        className="md:h-24 grow-1"
-                        ref={textAreaRef}
-                        placeholder="Message"
-                        spellCheck="false"
-                        onChange={onMessageChange}
-                        classNames={{
-                            inputWrapper: [
-                                "bg-indigo-100/30",
-                                "border-indigo-200/40",
-                                "focus-within:bg-indigo-200/70",
-                                "hover:!border-indigo-400/40",
-                                "md:h-24",
-                                "h-20",
-                            ],
-                            input: [
-                                "md:!text-3xl",
-                                "font-medium",
-                                "text-indigo-400",
-                                "placeholder:text-indigo-300/50",
-                                "tracking-tight",
-                                "truncate",
-                                "p-1",
-                            ],
-                        }}
-                    />
-                    <div className="flex flex-row gap-3 justify-center">
+            <form onSubmit={onSubmit} className="w-3/4 h-1/3 flex gap-3 items-center justify-center flex-row m-12 z-50">
+                <div
+                    style={{ gridTemplateColumns: "repeat(3, 1fr) repeat(2, 0.5fr)" }}
+                    className="grid grid-rows-6 gap-3 w-full h-full"
+                >
+                    <div style={{ gridArea: "1 / 1 / 4 / 4" }} className="w-full h-full">
+                        <Input
+                            type="text"
+                            name="plainText"
+                            variant="faded"
+                            className="w-full h-full"
+                            ref={textAreaRef}
+                            placeholder="Message"
+                            spellCheck="false"
+                            classNames={{
+                                inputWrapper: [
+                                    "bg-indigo-100/30",
+                                    "border-indigo-200/40",
+                                    "focus-within:bg-indigo-200/70",
+                                    "hover:!border-indigo-400/40",
+                                    "w-full",
+                                    "h-full",
+                                ],
+                                input: [
+                                    "md:text-3xl",
+                                    "font-medium",
+                                    "text-indigo-400",
+                                    "placeholder:text-indigo-300/50",
+                                    "tracking-tight",
+                                    "truncate",
+                                    "p-1",
+                                ],
+                            }}
+                        />
+                    </div>
+                    <Card
+                        style={{ gridArea: "4 / 1 / 7 / 4" }}
+                        className={`h-full w-full grow-1 flex justify-center bg-indigo-100/30 p-4 border-indigo-200/40 text-3xl font-medium border-2 shadow-sm truncate ${
+                            msg ? "text-indigo-400" : "text-indigo-300/50"
+                        }`}
+                    >
+                        {msg ? msg : "Encrypted Message"}
+                    </Card>
+                    <Button
+                        id="send-original"
+                        type="submit"
+                        style={{ gridArea: "1 / 4 / 3 / 6" }}
+                        className="bg-indigo-500/80 hover:bg-indigo-600 text-white font-bold text-2xl h-full w-full p-0"
+                        endContent={<Send />}
+                    >
+                        Send Original
+                    </Button>
+                    <div style={{ gridArea: "3 / 4 / 5 / 5" }} className="w-full h-full">
                         <Input
                             type="number"
                             name="keyOffset"
-                            className="md:w-24 w-20"
-                            placeholder="Key"
                             variant="faded"
-                            onChange={onKeyChange}
+                            className="w-full h-full"
+                            placeholder="Key"
                             min={1}
                             max={25}
                             defaultValue={1}
+                            onChange={onKeyChange}
                             classNames={{
                                 inputWrapper: [
-                                    "bg-indigo-200/30",
-                                    "border-indigo-300/40",
-                                    "focus-within:bg-indigo-300/70",
-                                    "hover:!border-indigo-500/40",
-                                    "md:h-24",
-                                    "md:w-24",
-                                    "h-20",
-                                    "w-20",
+                                    "bg-indigo-100/30",
+                                    "border-indigo-200/40",
+                                    "focus-within:bg-indigo-200/70",
+                                    "hover:!border-indigo-400/40",
+                                    "w-full",
+                                    "h-full",
                                 ],
                                 input: [
                                     "md:text-3xl",
                                     "text-2xl",
                                     "font-bold",
                                     "text-indigo-400",
-                                    "placeholder:text-indigo-300/95",
+                                    "placeholder:text-indigo-300/50",
                                     "tracking-tight",
                                     "text-center",
                                 ],
                             }}
                         />
-                        <Button
-                            type="submit"
-                            className="bg-indigo-500/80 hover:bg-indigo-600 text-white font-medium text-md md:h-24 md:w-24 w-20 h-20 p-0"
-                            startContent={<Send />}
-                        />
                     </div>
+                    <Button
+                        onClick={onEncrypt}
+                        style={{ gridArea: "3 / 5 / 5 / 6" }}
+                        className="bg-indigo-500/80 hover:bg-indigo-600 text-white font-bold text-2xl h-full w-full p-0"
+                        startContent={<Encrypt />}
+                    />
+                    <Button
+                        id="send-encrypted"
+                        type="submit"
+                        style={{ gridArea: "5 / 4 / 7 / 6" }}
+                        className="bg-indigo-500/80 hover:bg-indigo-600 text-white font-bold text-2xl h-full w-full p-0"
+                        endContent={<Send />}
+                    >
+                        Send Encrypted
+                    </Button>
                 </div>
             </form>
-            <Card
-                className={`bg-indigo-500/80 hover:bg-indigo-600 shadow-md font-medium text-white mx-12 absolute !transition-all ${
-                    msg ? "opacity-100" : "opacity-0"
-                } bottom-64 px-3 py-1`}
-                style={{ transition: "opacity 0.1s" }}
-            >
-                <CardBody>
-                    <p>
-                        Encrypted Message: <span className="font-bold">{msg}</span>
-                    </p>
-                </CardBody>
-            </Card>
         </div>
     );
 }
