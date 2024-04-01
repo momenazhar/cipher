@@ -16,7 +16,7 @@ export default function Attacker() {
     const appendedTextsRef = useRef(null);
 
     const { ref, replay } = useScramble({
-        text: "Attacking Page",
+        text: "Attacking Terminal",
         speed: 0.4,
     });
 
