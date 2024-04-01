@@ -1,7 +1,7 @@
 "use client";
 
-import { caesar } from "../caesar";
-import { socket } from "../socket";
+import { caesar } from "../../caesar";
+import { socket } from "../../socket";
 import { useState, useEffect } from "react";
 import { Card, Divider, Input } from "@nextui-org/react";
 import { Back } from "@/public/back";

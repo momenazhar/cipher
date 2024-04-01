@@ -1,25 +1,36 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { caesar } from "../caesar";
 import { socket } from "../socket";
-import { useState, useEffect } from "react";
-import { Button, Card } from "@nextui-org/react";
-import { Back } from "@/public/back";
-import Link from "next/link";
-import { Code } from "@/public/code";
+import { useState, useEffect, useRef } from "react";
+import { JetBrains_Mono } from "next/font/google";
+import Image from "next/image";
+import { useScramble } from "use-scramble";
+import { motion } from "framer-motion";
+
+const jetbrains = JetBrains_Mono({ subsets: ["latin"] });
 
 export default function Attacker() {
     const [mounted, setMounted] = useState(false);
-    const [cipherText, setCipherText] = useState([]);
-    const [startAnimation, setStartAnimation] = useState(false);
-    const [message, setMessage] = useState("");
+    const [appendedTexts, setAppendedTexts] = useState([]);
+    const appendedTextsRef = useRef(null);
+
+    const { ref, replay } = useScramble({
+        text: "Attacking Page",
+        speed: 0.4,
+    });
+
+    function append(...text) {
+        text.reverse();
+        setAppendedTexts((prevTexts) => [...text, ...prevTexts]);
+    }
 
     useEffect(() => {
         setMounted(true);
 
         function onMessage(message) {
-            setMessage(message);
+            console.log(message);
+            append(`A$T@CK3R❯ An encrypted text has been received: ${message}`);
         }
 
         socket.on("message", onMessage);
@@ -29,71 +40,112 @@ export default function Attacker() {
         };
     }, []);
 
-    const handleBruteForce = () => {
-        const cipherTexts = [];
+    useEffect(() => {
+        const intervalId = setInterval(replay, 1000);
+        return () => clearInterval(intervalId);
+    });
+
+    useEffect(() => {
+        if (appendedTextsRef.current) {
+            appendedTextsRef.current.scrollTop = appendedTextsRef.current.scrollHeight;
+        }
+    }, [appendedTexts]);
+
+    const handleBruteForce = (cipher) => {
         for (let i = 0; i <= 25; i++) {
             setTimeout(() => {
-                cipherTexts.push(caesar(message, 26 - i));
-                setCipherText([...cipherTexts]);
-                setStartAnimation(true);
+                const decryptedText = caesar(cipher, 26 - i);
+                append(`Decrypted Text with Key ${i}: ${decryptedText}`);
             }, i * 100);
         }
     };
 
+    const appendText = (event) => {
+        if (event.key !== "Enter") return;
+
+        const newText = event.target.value;
+        event.target.value = "";
+
+        if (!newText) return;
+
+        const args = newText.split(" ");
+        const command = args.shift();
+
+        switch (command) {
+            case "clear":
+                return setAppendedTexts([]);
+
+            case "decipher": {
+                if (args.length != 2 || Number.isNaN(+args[1]))
+                    return append(
+                        "SYSTEM❯ `decipher` command is missing parameters. Usage: `decipher <Cipher: String> <Key: Integer>`"
+                    );
+                return append(
+                    `$ ${newText}`,
+                    `A$T@CK3R❯ Deciphering ${args[0]} with key ${args[1]}: ${caesar(args[0], 26 - args[1])}`
+                );
+            }
+
+            default: {
+                if (newText.includes("bruteforce")) return handleBruteForce(args[0]);
+                append(`SYSTEM ERROR! \`${newText}\` is an unknown command!`);
+            }
+        }
+    };
+
     if (!mounted) return null;
+
     return (
-        <div className="w-svw h-svh flex flex-col items-center justify-center md:p-12 p-4 md:gap-8 gap-2">
-            <Link
-                href="/"
-                className="absolute top-12 left-12 text-slate-500 p-2 transition-all hover:bg-slate-300/20 rounded-lg"
-            >
-                <Back />
-            </Link>
-            <div className="w-svw text-center flex md:gap-5 gap-2 flex-col">
-                <h1 className="md:text-5xl text-2xl font-extrabold text-slate-500 select-none drop-shadow-md">
-                    Attacker
-                </h1>
-                <p className="md:text-2xl text-md px-2 text-slate-400 select-none drop-shadow-sm">
-                    You are the attacker! You will receive an encrypted text, and you will brute force every possible
-                    key to find the original text
-                </p>
+        <div
+            className={`${jetbrains.className} flex flex-col h-screen bg-gradient-to-br from-zinc-950 to-zinc-900 text-white overflow-hidden`}
+        >
+            <div className="p-5 flex shrink items-center justify-between bg-gradient-to-r from-zinc-900 to-zinc-800">
+                <div className="flex flex-row items-center gap-4">
+                    <Image height={32} width={32} alt="icon" src={"/reaper.png"} />
+                    <span className="text-2xl text-red-400 font-bold select-none" ref={ref} />
+                </div>
+                <div className="flex flex-row gap-2">
+                    <div className="rounded-[50px] bg-green-400 h-5 w-5 shadow-green-400/40 shadow-md" />
+                    <div className="rounded-[50px] bg-yellow-400 h-5 w-5 shadow-yellow-400/40 shadow-md" />
+                    <div className="rounded-[50px] bg-red-400 h-5 w-5 shadow-red-400/40 shadow-md" />
+                </div>
             </div>
-            <div className="h-24 w-full flex flex-row gap-8">
-                <Card
-                    className={`h-full w-[80%] grow-1 flex justify-center bg-indigo-100/30 p-4 border-indigo-200/40 text-3xl font-medium border-2 shadow-sm truncate ${
-                        message ? "text-indigo-400" : "text-indigo-300/50"
-                    }`}
-                >
-                    {message ? message : "Cipher Text"}
-                </Card>
-                <Button
-                    onClick={handleBruteForce}
-                    className="bg-indigo-500/80 hover:bg-indigo-600 text-white font-bold text-2xl w-[20%] h-full p-0"
-                    endContent={<Code />}
-                >
-                    Brute Force
-                </Button>
-            </div>
-            <div className="md:h-[60%] h-3/5 overflow-y-scroll w-full flex flex-col gap-2 p-4 rounded-3xl list-container selection:bg-violet-300/70 selection:text-violet-400">
-                {cipherText.map((text, index) => (
-                    <motion.div
-                        key={index}
-                        className={`flex flex-row gap-2 ${startAnimation ? "slide-in-right" : ""}`}
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.2, delay: index * 0.1 }}
-                    >
-                        <Card
-                            key={index}
-                            className="w-full md:h-full h-12 md:grow-1 flex justify-center bg-indigo-100/30 p-6 border-indigo-200/40 md:text-2xl text-md text-indigo-400 font-semibold md:border-2 shadow-sm"
+            <div className="flex flex-col flex-auto text-3xl p-5 gap-3">
+                <div className="grow h-0 flex flex-col-reverse overflow-y-auto scroll-buddy">
+                    {appendedTexts.map((text, index) => (
+                        <motion.div
+                            initial={{ opacity: 0, x: -50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.2 }}
+                            key={appendedTexts.length - index}
+                            className={
+                                text.includes("SYSTEM ERROR!") || text.includes("A$T@CK3R❯ An encrypted")
+                                    ? "text-red-600"
+                                    : text.includes("Cipher Text")
+                                    ? "text-cyan-400 font-extrabold"
+                                    : text.includes("A$T@CK3R❯ Deciphering")
+                                    ? "text-[#11ff00]"
+                                    : ""
+                            }
                         >
                             {text}
-                        </Card>
-                        <Button className="bg-indigo-500/80 md:min-w-unit-20 min-w-fit hover:bg-indigo-600 text-white font-bold md:text-4xl md:h-24 md:w-24 text-md h-12 w-12 shrink-0 p-0">
-                            {index}
-                        </Button>
-                    </motion.div>
-                ))}
+                        </motion.div>
+                    ))}
+                </div>
+                <div className="h-[1px] shrink bg-zinc-800" />
+                <div className="flex flex-row shirnk gap-4">
+                    <span className="text-red-400 font-bold">
+                        Attacker@KUST:<span className="text-cyan-500">~</span>
+                        <span className="text-white">$</span>
+                    </span>
+                    <input
+                        type="text"
+                        spellCheck="false"
+                        className="w-full outline-none bg-transparent"
+                        onKeyDown={appendText}
+                        autoFocus
+                    />
+                </div>
             </div>
         </div>
     );
