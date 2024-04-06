@@ -13,6 +13,7 @@ export default function FriendlyLayout({ children }) {
                 />
                 <Image
                     src="/background2.png"
+                    priority="true"
                     height={800}
                     width={800}
                     alt="Background Gradient"

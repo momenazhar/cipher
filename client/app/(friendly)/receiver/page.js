@@ -22,11 +22,9 @@ export default function Receiver() {
         setMounted(true);
 
         socket.on("message", setMessage);
-        socket.on("originalmessage", setOriginal);
 
         return () => {
             socket.off("message", setMessage);
-            socket.off("originalmessage", setOriginal);
         };
     }, []);
 
