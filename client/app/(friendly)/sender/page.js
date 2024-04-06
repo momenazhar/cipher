@@ -12,6 +12,7 @@ import { Divider } from "@nextui-org/react";
 import Image from "next/image";
 import { Menu } from "@/public/menu";
 import { Settings } from "@/public/settings";
+import { Upload } from "@/public/upload";
 
 export default function Sender() {
     const [mounted, setMounted] = useState(false);
@@ -41,8 +42,10 @@ export default function Sender() {
     function emitMessage(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
-        socket.emit("message", formData.get("messageText"));
-        setMsg("");
+        if (/\S/.test(formData.get("messageText"))) {
+            socket.emit("message", formData.get("messageText"));
+            setMsg("");
+        }
     }
 
     function encryptMessage() {
@@ -71,9 +74,11 @@ export default function Sender() {
                 <Back />
             </Link>
             <div className="w-svw text-center flex md:gap-5 gap-2 flex-col">
-                <h1 className="md:text-5xl text-2xl font-extrabold text-slate-500 select-none drop-shadow-md">
-                    Sender
-                </h1>
+                <div className="flex flex-row justify-center items-end gap-2 text-slate-500 drop-shadow-md">
+                    <h1 className="md:text-5xl text-2xl font-extrabold select-none">Sender</h1>
+                    <Upload size={44} />
+                </div>
+
                 <p className="md:text-2xl text-md px-2 text-slate-400 select-none drop-shadow-sm">
                     You are the sender! Enter a message and choose a key to encrypt it and send it
                 </p>
@@ -98,7 +103,7 @@ export default function Sender() {
                             className="h-12 w-12 rounded-[50px] bg-slate-300"
                         />
                         <div className="flex flex-col">
-                            <p className="font-bold text-lg leading-6 text-slate-700">Someone</p>
+                            <p className="font-bold text-lg leading-6 text-slate-700">Receiver</p>
                             <div className="flex flex-row items-center gap-1">
                                 <div className="h-2.5 w-2.5 rounded-[50px] bg-green-400"></div>
                                 <p className="leading-5 text-slate-500">Online</p>
@@ -182,7 +187,7 @@ export default function Sender() {
                                 alt="avatar"
                                 className="h-8 w-8 rounded-[50px] bg-slate-300"
                             />
-                            <p className="font-semibold text-lg text-white">Someone</p>
+                            <p className="font-semibold text-lg text-white">Receiver</p>
                         </div>
                         <Settings />
                     </div>
