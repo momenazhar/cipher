@@ -30,7 +30,7 @@ export default function Attacker() {
 
         function onMessage(message) {
             console.log(message);
-            append(`A$T@CK3R❯ An encrypted text has been received: ${message}`);
+            append(`A$T@CK3R❯ A message has been captured from the sender: ${message}`);
         }
 
         socket.on("message", onMessage);

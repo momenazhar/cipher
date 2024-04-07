@@ -91,76 +91,84 @@ export default function Receiver() {
                     </div>
                     <div className="w-full flex flex-col h-full bg-slate-50/50">
                         <div className="m-2 p-2 flex flex-col-reverse h-0 grow overflow-y-auto gap-3 ">
-                            {messages
-                                .map((message, index) => (
-                                    <div key={index} className="flex flex-row gap-2">
-                                        <div className="flex flex-row w-[40%] bg-slate-100 border-slate-200 border-2 p-3 rounded-xl ">
-                                            <div className="flex flex-row items-end gap-1">
-                                                <div
-                                                    className="px-6 py-3 text-lg text-slate-600 font-semibold w-fit bg-slate-200 
-                                        rounded-md"
-                                                >
-                                                    {message.content}
-                                                </div>
-                                                <p className="text-xs font-medium  text-slate-400/50">
-                                                    {message.timestamp}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-row w-[20%] h-full gap-2">
-                                            <Input
-                                                type="number"
-                                                name="keyOffset"
-                                                variant="faded"
-                                                className="w-1/2 h-full"
-                                                placeholder="0"
-                                                min={0}
-                                                max={25}
-                                                onChange={onChange}
-                                                classNames={{
-                                                    inputWrapper: [
-                                                        "bg-indigo-100/30",
-                                                        "border-indigo-200/40",
-                                                        "focus-within:bg-indigo-200/70",
-                                                        "hover:!border-indigo-400/40",
-                                                        "w-full",
-                                                        "h-full",
-                                                        "!rounded-xl",
-                                                    ],
-                                                    input: [
-                                                        "text-2xl",
-                                                        "font-bold",
-                                                        "text-indigo-400",
-                                                        "placeholder:text-indigo-300/50",
-                                                        "tracking-tight",
-                                                        "text-center",
-                                                    ],
-                                                }}
-                                            />
-                                            <Button
-                                                id="send-encrypted"
-                                                onClick={() => decryptMessage(index, message.content)}
-                                                className="bg-indigo-500/80 hover:bg-indigo-600 text-white font-bold flex-grow h-full text-lg"
-                                            >
-                                                Shift
-                                            </Button>
-                                        </div>
-                                        <div className="flex flex-row w-[40%] bg-slate-100 border-slate-200 border-2 p-3 rounded-xl ">
-                                            <div className="flex flex-row items-end">
-                                                {shiftedTexts[index] !== "" &&
-                                                shiftedTexts[index] !== message.content ? (
+                            {messages.length === 0 ? (
+                                <div className="w-full h-full flex items-center justify-center">
+                                    <p className="text-2xl font-medium text-slate-400 select-none">
+                                        There are no messages yet.
+                                    </p>
+                                </div>
+                            ) : (
+                                messages
+                                    .map((message, index) => (
+                                        <div key={index} className="flex flex-row gap-2">
+                                            <div className="flex flex-row w-[40%] bg-slate-100 border-slate-200 border-2 p-3 rounded-xl ">
+                                                <div className="flex flex-row items-end gap-1">
                                                     <div
                                                         className="px-6 py-3 text-lg text-slate-600 font-semibold w-fit bg-slate-200 
-        rounded-md"
+                                        rounded-md"
                                                     >
-                                                        {shiftedTexts[index]}
+                                                        {message.content}
                                                     </div>
-                                                ) : null}
+                                                    <p className="text-xs font-medium  text-slate-400/50">
+                                                        {message.timestamp}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-row w-[20%] h-full gap-2">
+                                                <Input
+                                                    type="number"
+                                                    name="keyOffset"
+                                                    variant="faded"
+                                                    className="w-1/2 h-full"
+                                                    placeholder="0"
+                                                    min={0}
+                                                    max={25}
+                                                    onChange={onChange}
+                                                    classNames={{
+                                                        inputWrapper: [
+                                                            "bg-indigo-100/30",
+                                                            "border-indigo-200/40",
+                                                            "focus-within:bg-indigo-200/70",
+                                                            "hover:!border-indigo-400/40",
+                                                            "w-full",
+                                                            "h-full",
+                                                            "!rounded-xl",
+                                                        ],
+                                                        input: [
+                                                            "text-2xl",
+                                                            "font-bold",
+                                                            "text-indigo-400",
+                                                            "placeholder:text-indigo-300/50",
+                                                            "tracking-tight",
+                                                            "text-center",
+                                                        ],
+                                                    }}
+                                                />
+                                                <Button
+                                                    id="send-encrypted"
+                                                    onClick={() => decryptMessage(index, message.content)}
+                                                    className="bg-indigo-500/80 hover:bg-indigo-600 text-white font-bold flex-grow h-full text-lg"
+                                                >
+                                                    Shift
+                                                </Button>
+                                            </div>
+                                            <div className="flex flex-row w-[40%] bg-slate-100 border-slate-200 border-2 p-3 rounded-xl ">
+                                                <div className="flex flex-row items-end">
+                                                    {shiftedTexts[index] !== "" &&
+                                                    shiftedTexts[index] !== message.content ? (
+                                                        <div
+                                                            className="px-6 py-3 text-lg text-slate-600 font-semibold w-fit bg-slate-200 
+        rounded-md"
+                                                        >
+                                                            {shiftedTexts[index]}
+                                                        </div>
+                                                    ) : null}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))
-                                .reverse()}
+                                    ))
+                                    .reverse()
+                            )}
                         </div>
                     </div>
                 </div>
