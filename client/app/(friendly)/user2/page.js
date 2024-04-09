@@ -43,6 +43,7 @@ export default function UserTwo() {
                     content: msg,
                     timestamp: new Date(),
                     sender: "user1",
+                    shifted: 0,
                 },
             ]);
             if (inputRef.current) {
@@ -95,6 +96,7 @@ export default function UserTwo() {
                     content: newMessage,
                     timestamp: new Date(),
                     sender: "user2",
+                    shifted: 0,
                 },
             ]);
         });
@@ -325,6 +327,7 @@ export default function UserTwo() {
                 onOpenChange={onOpenChange}
                 className="z-100"
                 backdrop="blur"
+                radius="0px"
                 classNames={{ backdrop: "backdrop-blur-sm bg-black/30" }}
             >
                 <ModalContent>
