@@ -3,13 +3,24 @@
 import { caesar } from "../../caesar";
 import { socket } from "../../socket";
 import { useState, useEffect, useRef } from "react";
-import { Button, Input } from "@nextui-org/react";
+import {
+    Button,
+    Input,
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    useDisclosure,
+} from "@nextui-org/react";
 import { Send } from "@/public/send";
 import { Encrypt } from "@/public/encrypt";
 import { Divider } from "@nextui-org/react";
 import Image from "next/image";
 import { Menu } from "@/public/menu";
 import { Settings } from "@/public/settings";
+import { Chat } from "@/public/chat";
+import { motion } from "framer-motion";
 
 export default function UserOne() {
     const [mounted, setMounted] = useState(false);
@@ -19,6 +30,10 @@ export default function UserOne() {
     const [offset, setOffset] = useState(0);
 
     const [received, setReceived] = useState([]);
+
+    const [hoveredIndex, setHoveredIndex] = useState(null);
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const [selectedMessageIndex, setSelectedMessageIndex] = useState(null);
 
     function sendMessage() {
         if (msg.trim() !== "") {
@@ -57,6 +72,19 @@ export default function UserOne() {
         setOffset(+e.target.value);
     }
 
+    const handleMouseEnter = (index) => {
+        setHoveredIndex(index);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredIndex(null);
+    };
+
+    const handleButtonClick = (index) => {
+        setSelectedMessageIndex(index);
+        onOpen();
+    };
+
     useEffect(() => {
         setMounted(true);
 
@@ -92,7 +120,10 @@ export default function UserOne() {
             >
                 <div className="h-full basis-1/4 flex flex-col items-center shadow-2xl shadow-slate-600/30 z-10">
                     <div className="w-full h-16 z-20 bg-gradient-to-r from-indigo-500 to-indigo-400 text-white font-bold text-2xl flex items-center p-5 justify-between">
-                        <p>CHATS</p>
+                        <div className="flex flex-row justify-center gap-2.5">
+                            <Chat size={8} />
+                            <p>CHATS</p>
+                        </div>
                         <Menu />
                     </div>
                     <div className="bg-slate-200/60 flex-grow flex flex-row items-center pl-5 gap-5 w-full">
@@ -173,7 +204,7 @@ export default function UserOne() {
                                 className="bg-indigo-500/80 hover:bg-indigo-600 text-white font-bold flex-grow h-12 text-md"
                                 endContent={<Encrypt size={6} />}
                             >
-                                Encrypt Message
+                                Encrypt Input
                             </Button>
                         </div>
                     </div>
@@ -198,7 +229,10 @@ export default function UserOne() {
                         <div className="m-2 p-2 flex flex-col-reverse h-0 grow overflow-y-auto gap-2">
                             {allMessages
                                 .map((message, index) => (
-                                    <div
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 25 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.2 }}
                                         key={index}
                                         className={`flex flex-row items-end gap-1 ${
                                             message.sender === "user1" ? "justify-end" : "justify-start"
@@ -210,13 +244,27 @@ export default function UserOne() {
                                             }`}
                                         >
                                             <div
-                                                className={`px-5 py-2 text-lg font-medium w-fit rounded-2xl ${
+                                                className={`px-5 py-2 text-lg font-medium relative w-fit rounded-2xl ${
                                                     message.sender === "user1"
                                                         ? "bg-indigo-400 text-white"
                                                         : "bg-slate-200 text-zinc-700"
                                                 }`}
+                                                onMouseEnter={() => handleMouseEnter(index)}
+                                                onMouseLeave={handleMouseLeave}
                                             >
                                                 {message.content}
+                                                {hoveredIndex === index && (
+                                                    <Button
+                                                        className={`absolute top-0 p-1 rounded-md min-w-0 h-auto z-30 ${
+                                                            message.sender === "user1"
+                                                                ? "bg-indigo-500 text-white left-0 -translate-x-3.5 -translate-y-3.5"
+                                                                : "bg-slate-300 text-slate-700 right-0 translate-x-3.5 -translate-y-3.5"
+                                                        }`}
+                                                        onPress={onOpen}
+                                                        onClick={() => handleButtonClick(index)}
+                                                        endContent={<Encrypt size={5} />}
+                                                    />
+                                                )}
                                             </div>
                                             <p className="text-xs font-medium text-slate-400/50">
                                                 {message.timestamp.toLocaleString([], {
@@ -225,7 +273,7 @@ export default function UserOne() {
                                                 })}
                                             </p>
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 ))
                                 .reverse()}
                         </div>
@@ -272,6 +320,32 @@ export default function UserOne() {
                     </div>
                 </div>
             </form>
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                className="z-100"
+                backdrop="blur"
+                classNames={{ backdrop: "backdrop-blur-sm bg-black/30" }}
+            >
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
+                            <ModalBody>
+                                <p>{selectedMessageIndex !== null && allMessages[selectedMessageIndex].content}</p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger" variant="light" onPress={onClose}>
+                                    Close
+                                </Button>
+                                <Button color="primary" onPress={onClose}>
+                                    Action
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
         </div>
     );
 }
