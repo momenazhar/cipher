@@ -32,8 +32,10 @@ export default function UserTwo() {
     const [received, setReceived] = useState([]);
 
     const [hoveredIndex, setHoveredIndex] = useState(null);
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
     const [selectedMessageIndex, setSelectedMessageIndex] = useState(null);
+
+    const [shiftKey, setShiftKey] = useState(0);
 
     function sendMessage() {
         if (msg.trim() !== "") {
@@ -73,6 +75,11 @@ export default function UserTwo() {
         setOffset(+e.target.value);
     }
 
+    function onShiftChange(e) {
+        e.preventDefault();
+        setShiftKey(+e.target.value);
+    }
+
     const handleMouseEnter = (index) => {
         setHoveredIndex(index);
     };
@@ -84,6 +91,12 @@ export default function UserTwo() {
     const handleButtonClick = (index) => {
         setSelectedMessageIndex(index);
         onOpen();
+    };
+
+    const onShift = (index) => {
+        allMessages[index].shifted = shiftKey;
+        allMessages[index].content = caesar(allMessages[index].content, 26 - shiftKey);
+        onClose();
     };
 
     useEffect(() => {
@@ -254,7 +267,7 @@ export default function UserTwo() {
                                                 onMouseEnter={() => handleMouseEnter(index)}
                                                 onMouseLeave={handleMouseLeave}
                                             >
-                                                {message.content}
+                                                {message.content}{" "}
                                                 {hoveredIndex === index && (
                                                     <Button
                                                         className={`absolute top-0 p-1 rounded-md min-w-0 h-auto z-30 ${
@@ -262,8 +275,7 @@ export default function UserTwo() {
                                                                 ? "bg-purple-500 text-white left-0 -translate-x-3.5 -translate-y-3.5"
                                                                 : "bg-slate-300 text-slate-700 right-0 translate-x-3.5 -translate-y-3.5"
                                                         }`}
-                                                        onPress={onOpen}
-                                                        onClick={() => handleButtonClick(index)}
+                                                        onPress={() => handleButtonClick(index)}
                                                         endContent={<Encrypt size={5} />}
                                                     />
                                                 )}
@@ -273,6 +285,11 @@ export default function UserTwo() {
                                                     hour: "2-digit",
                                                     minute: "2-digit",
                                                 })}
+                                                {message.shifted === 0 ? (
+                                                    <></>
+                                                ) : (
+                                                    <span className="italic"> (Shifted)</span>
+                                                )}
                                             </p>
                                         </div>
                                     </motion.div>
@@ -327,22 +344,70 @@ export default function UserTwo() {
                 onOpenChange={onOpenChange}
                 className="z-100"
                 backdrop="blur"
-                radius="0px"
+                radius="lg"
                 classNames={{ backdrop: "backdrop-blur-sm bg-black/30" }}
             >
-                <ModalContent>
+                <ModalContent className="border-3 border-purple-100 rounded-3xl">
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
-                            <ModalBody>
-                                <p>{selectedMessageIndex !== null && allMessages[selectedMessageIndex].content}</p>
+                            <ModalHeader className="flex flex-col gap-1 text-slate-700 p-4">Shift Message</ModalHeader>
+                            <ModalBody className="py-0 px-4">
+                                <div className="flex flex-row justify-between bg-slate-50 rounded-xl p-3">
+                                    <div className="flex flex-col">
+                                        <h3 className="font-bold uppercase text-slate-400 text-sm select-none0">
+                                            Current Text
+                                        </h3>
+                                        <p className="text-lg text-slate-600">
+                                            {selectedMessageIndex !== null && allMessages[selectedMessageIndex].content}
+                                        </p>
+                                    </div>
+                                    <div className="">
+                                        <Input
+                                            type="number"
+                                            variant="faded"
+                                            className="w-12 h-12"
+                                            min={0}
+                                            max={25}
+                                            defaultValue={`${
+                                                selectedMessageIndex !== null &&
+                                                allMessages[selectedMessageIndex].shifted
+                                            }`}
+                                            onChange={onShiftChange}
+                                            classNames={{
+                                                inputWrapper: [
+                                                    "bg-purple-100/70",
+                                                    "border-none",
+                                                    "focus-within:bg-purple-200/70",
+                                                    "hover:!border-purple-400/40",
+                                                    "rounded-md",
+                                                    "w-full",
+                                                    "h-full",
+                                                ],
+                                                input: [
+                                                    "text-lg",
+                                                    "font-bold",
+                                                    "text-purple-400",
+                                                    "placeholder:text-purple-300/50",
+                                                    "tracking-tight",
+                                                    "text-center",
+                                                ],
+                                            }}
+                                        />
+                                    </div>
+                                </div>
                             </ModalBody>
-                            <ModalFooter>
+                            <ModalFooter className="p-4">
                                 <Button color="danger" variant="light" onPress={onClose}>
-                                    Close
+                                    Cancel
                                 </Button>
-                                <Button color="primary" onPress={onClose}>
-                                    Action
+
+                                <Button
+                                    id="send-message"
+                                    onPress={() => onShift(selectedMessageIndex)}
+                                    type="submit"
+                                    className="p-0 bg-purple-500 text-white font-bold flex items-center justify-center shadow-md shadow-purple-300/50"
+                                >
+                                    Shift
                                 </Button>
                             </ModalFooter>
                         </>

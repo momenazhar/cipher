@@ -76,18 +76,22 @@ export default function Attacker() {
                 return setAppendedTexts([]);
 
             case "decipher": {
-                if (args.length != 2 || Number.isNaN(+args[1]))
+                if (Number.isNaN(+args[0])) {
                     return append(
-                        "SYSTEM❯ `decipher` command is missing parameters. Usage: `decipher <Cipher: String> <Key: Integer>`"
+                        "SYSTEM❯ `decipher` command is missing parameters. Usage: `decipher <Key: Integer> <Cipher: String>`"
                     );
+                }
                 return append(
                     `$ ${newText}`,
-                    `A$T@CK3R❯ Deciphering ${args[0]} with key ${args[1]}: ${caesar(args[0], 26 - args[1])}`
+                    `A$T@CK3R❯ Deciphering ${args.slice(1).join(" ")} with key ${args[0]}: ${caesar(
+                        args.slice(1).join(" "),
+                        26 - args[0]
+                    )}`
                 );
             }
 
             default: {
-                if (newText.includes("bruteforce")) return handleBruteForce(args[0]);
+                if (newText.includes("bruteforce")) return handleBruteForce(args.join(" "));
                 append(`SYSTEM ERROR! \`${newText}\` is an unknown command!`);
             }
         }
